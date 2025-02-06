@@ -8,10 +8,10 @@ on:
         type: string
         description: Java version to build with
         default: '21'
-      gradle-run-tasks:
+      gradle-task:
         required: false
         type: string
-        description: Gradle tasks to run
+        description: Gradle task to run
         default: './gradlew --configuration-cache build shadowJar'
 
 jobs:
@@ -28,4 +28,4 @@ jobs:
           java-version: ${{ inputs.java-version }}
 
       - uses: gradle/actions/setup-gradle@v4
-      - run: ${{ inputs.gradle-run-tasks }}
+      - run: ${{ inputs.gradle-task }}
