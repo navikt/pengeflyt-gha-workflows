@@ -12,7 +12,7 @@ on:
         required: false
         type: string
         description: Pnpm version to run tests with
-        default: '9'
+        default: '10'
 
 jobs:
   playwright-test:
