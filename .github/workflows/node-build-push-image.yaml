@@ -50,10 +50,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Install dependencies for client
-        run: pnpm install
+        run: pnpm install --frozen-lockfile
 
       - name: Install dependencies for server
-        run: cd server && pnpm install
+        run: cd server && pnpm install --frozen-lockfile
 
       - name: Build server
         run: cd server && pnpm run build
