@@ -52,10 +52,11 @@ jobs:
 
       - name: Install dependencies for server
         run: |
+          cd server
           pnpm config set //npm.pkg.github.com/:_authToken $NODE_AUTH_TOKEN
           pnpm config set engine-strict true
           pnpm config set @navikt:registry https://npm.pkg.github.com
-          cd server && pnpm install --frozen-lockfile
+          pnpm install --frozen-lockfile
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
