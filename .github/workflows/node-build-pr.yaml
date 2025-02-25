@@ -32,19 +32,24 @@ jobs:
           node-version: ${{ inputs.node-version }}
           cache: 'pnpm'
 
-      - name: Sette pnpm-config
+      - name: Install dependencies for client
         run: |
           pnpm config set //npm.pkg.github.com/:_authToken $NODE_AUTH_TOKEN
           pnpm config set engine-strict true
           pnpm config set @navikt:registry https://npm.pkg.github.com
+          pnpm install --frozen-lockfile
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
-      - name: Install dependencies for client
-        run: pnpm install --frozen-lockfile
-
       - name: Install dependencies for server
-        run: cd server && pnpm install --frozen-lockfile
+        run: |
+          cd server
+          pnpm config set //npm.pkg.github.com/:_authToken $NODE_AUTH_TOKEN
+          pnpm config set engine-strict true
+          pnpm config set @navikt:registry https://npm.pkg.github.com
+          pnpm install --frozen-lockfile
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build server
         run: cd server && pnpm run build
