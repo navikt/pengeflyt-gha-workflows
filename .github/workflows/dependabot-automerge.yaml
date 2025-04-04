@@ -1,5 +1,9 @@
-name: Dependabot auto-merge
-on: pull_request
+on:
+  workflow_call:
+    inputs:
+      github-token:
+        required: true
+        type: string
 
 jobs:
   dependabot:
