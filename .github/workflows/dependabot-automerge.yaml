@@ -1,3 +1,5 @@
+name: Dependabot Auto-Merge
+
 on:
   workflow_call:
     inputs:
@@ -13,17 +15,18 @@ jobs:
       contents: write
       pull-requests: write
     steps:
-      - name: Dependabot metadata
+      - uses: dependabot/fetch-metadata@d7267f607e9d3fb96fc2fbe83e0af444713e90b7
         id: metadata
-        uses: dependabot/fetch-metadata@d7267f607e9d3fb96fc2fbe83e0af444713e90b7
         with:
           github-token: ${{ inputs.github-token }}
+
       - name: Auto-merge changes from Dependabot
         if: steps.metadata.outputs.update-type != 'version-update:semver-major' || steps.metadata.outputs.package-ecosystem == 'github_actions'
         run: gh pr merge --auto --squash "$PR_URL"
         env:
           PR_URL: ${{github.event.pull_request.html_url}}
           GITHUB_TOKEN: ${{ inputs.github-token }}
+
       - name: Run deploy workflow
         if: success()
         env:
