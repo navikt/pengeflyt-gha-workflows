@@ -48,7 +48,10 @@ jobs:
               })));
 
               // Exclude the current workflow's check
-              const filteredChecks = uniqueChecks.filter(check => check.name !== 'dependabot-automerge');
+              const filteredChecks = uniqueChecks.filter(check => 
+                !check.name.includes('dependabot-automerge') &&
+                !check.name.endsWith('/ dependabot-automerge')
+              );
 
               const inProgress = filteredChecks.some(check => check.status === 'in_progress' || check.status === 'queued');
               const failed = filteredChecks.some(check => check.conclusion === 'failure');
