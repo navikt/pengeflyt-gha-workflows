@@ -52,6 +52,8 @@ jobs:
 
       - name: Build app
         run: pnpm run build
+        env:
+          ASTRO_KEY: ${{ secrets.ASTRO_KEY }}
 
       - name: Build docker image
         uses: docker/setup-buildx-action@v3
