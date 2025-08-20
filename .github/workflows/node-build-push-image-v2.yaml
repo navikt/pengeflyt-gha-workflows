@@ -3,16 +3,16 @@ name: Build & Push Docker Image
 on:
   workflow_call:
     inputs:
-      node-version:
-        required: false
-        type: string
-        description: Node version to build with
-        default: '22'
       pnpm-version:
         required: false
         type: string
         description: pnpm version to build with
         default: '10'
+      node-version:
+        required: false
+        type: string
+        description: Node version to build with
+        default: '22'
       image-tag:
         required: false
         type: string
@@ -54,9 +54,6 @@ jobs:
         run: pnpm run build
         env:
           ASTRO_KEY: ${{ secrets.ASTRO_KEY }}
-
-      - name: Build docker image
-        uses: docker/setup-buildx-action@v3
 
       - name: Push Docker Image to GAR
         uses: nais/docker-build-push@v0
