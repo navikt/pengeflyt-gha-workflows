@@ -13,6 +13,11 @@ on:
         type: string
         description: pnpm version to build with
         default: '10'
+      build-command:
+        required: false
+        type: string
+        description: Command to build the application
+        default: 'pnpm run build'
 
 jobs:
   build-pr:
@@ -42,4 +47,4 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build app
-        run: pnpm run build
+        run: ${{ inputs.build-command }}

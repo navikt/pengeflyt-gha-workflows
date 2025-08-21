@@ -18,6 +18,16 @@ on:
         type: string
         description: Docker image tag
         default: 'latest'
+      build-command:
+        required: false
+        type: string
+        description: Command to build the application
+        default: 'pnpm run build'
+    secrets:
+      ASTRO_KEY:
+        required: false
+        description: Optional Astro key
+
     outputs:
       image:
         description: Google Artifact Registery image
@@ -51,7 +61,7 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build app
-        run: pnpm run build
+        run: ${{ inputs.build-command }}
         env:
           ASTRO_KEY: ${{ secrets.ASTRO_KEY }}
 
