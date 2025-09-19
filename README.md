@@ -1,6 +1,6 @@
 # pengeflyt-gha-workflows
 
-Repoet inneholder gjenbrukbare GitHub Actions workflows som kan gjenbrukes på tvers av flere repositorier.
+Repoet inneholder GitHub Actions workflows som kan gjenbrukes på tvers av flere repositorier.
 Dette lar oss sentralisere og standardisere CI/CD-logikk, slik at vi kan vedlikeholde denne logikken på ett sted.
 
 ## Utvikling og endringer
