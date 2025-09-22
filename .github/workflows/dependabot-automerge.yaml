@@ -26,7 +26,12 @@ on:
         description: 'Whether to automatically approve PRs before merging them'
         required: false
         type: boolean
-        default: true  
+        default: true 
+      merge-method:
+        description: 'The merge method to use when merging pull requests (merge, squash, rebase)'
+        required: false
+        type: string
+        default: 'squash'   
   workflow_dispatch:
 
 jobs:
@@ -50,6 +55,7 @@ jobs:
           semver-filter: ${{ inputs.semver-filter }}
           always-allow: ${{ inputs.always-allow }}
           auto-approve: ${{ inputs.auto-approve }}
+          merge-method: ${{ inputs.merge-method }}
 
       - name: Automerge results
         run: |
