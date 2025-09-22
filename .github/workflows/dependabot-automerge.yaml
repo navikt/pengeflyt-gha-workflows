@@ -27,8 +27,6 @@ on:
         required: false
         type: boolean
         default: true  
-  schedule:
-    - cron: '0 7-14 * * 1-5'  # 9 AM to 4 PM CEST (7 AM to 2 PM UTC) **NOTE** Vi må kanskje bytte denne ved vintertid? til '0 8-15 * * 1-5'
   workflow_dispatch:
 
 jobs:
