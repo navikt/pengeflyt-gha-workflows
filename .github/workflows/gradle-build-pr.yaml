@@ -17,6 +17,8 @@ on:
 jobs:
   build-pr:
     runs-on: ubuntu-latest
+    env:
+      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - uses: actions/checkout@v5
         with:
