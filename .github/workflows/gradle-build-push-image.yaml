@@ -6,7 +6,7 @@ on:
       team:
         required: false
         type: string
-        description: Which Nais team's GAR to push the image to
+        description: Which Nais team's access token to use
         default: 'okonomi'
       java-version:
         required: false

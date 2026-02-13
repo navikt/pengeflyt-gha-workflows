@@ -6,7 +6,7 @@ on:
       team:
         required: false
         type: string
-        description: Which Nais team's GAR to use
+        description: Which Nais team's access token to use
         default: 'okonomi'
       language:
         required: true
