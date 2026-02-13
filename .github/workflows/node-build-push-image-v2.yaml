@@ -3,6 +3,11 @@ name: Build & Push Docker Image
 on:
   workflow_call:
     inputs:
+      team:
+        required: false
+        type: string
+        description: Which Nais team's GAR to push the image to
+        default: 'okonomi'
       pnpm-version:
         required: false
         type: string
@@ -74,7 +79,7 @@ jobs:
         uses: nais/docker-build-push@v0
         id: docker-build-push
         with:
-          team: okonomi
+          team: ${{ inputs.team }}
           image_suffix: ${{ inputs.image-suffix }}
           tag: ${{ inputs.image-tag }}
     outputs:
