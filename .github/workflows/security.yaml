@@ -3,6 +3,11 @@ name: Security
 on:
   workflow_call:
     inputs:
+      team:
+        required: false
+        type: string
+        description: Which Nais team's access token to use
+        default: 'okonomi'
       language:
         required: true
         type: string
@@ -46,7 +51,7 @@ jobs:
         uses: nais/login@v0
         id: login
         with:
-          team: okonomi
+          team: ${{ inputs.team }}
           identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
           project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
 
