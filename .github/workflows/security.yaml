@@ -22,6 +22,10 @@ env:
   LATEST_IMAGE: ${{ format('{0}{1}:latest', github.event.repository.name, inputs.image-suffix != '' && format('-{0}', inputs.image-suffix) || '') }}
   TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
   TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db"
+  # Støtte for Gradle-prosjekter som har "val githubPassword: String by project" for å kunne hente private
+  # dependencies fra GAR; fordrer at prosjekt-workflowen som kaller denne delte workflowen sender videre GITHUB_TOKEN
+  # (f.eks. med "secrets: inherit")
+  ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.GITHUB_TOKEN }}
 
 jobs:
   security-analyze:
@@ -37,13 +41,13 @@ jobs:
         with:
           persist-credentials: false
 
-      - uses: github/codeql-action/init@v3
+      - uses: github/codeql-action/init@v4
         with:
           languages: ${{ matrix.language }}
-      - uses: github/codeql-action/autobuild@v3
+      - uses: github/codeql-action/autobuild@v4
 
       - name: Perform CodeQL Analysis
-        uses: github/codeql-action/analyze@v3
+        uses: github/codeql-action/analyze@v4
         with:
           category: "/language:${{ matrix.language }}"
 
@@ -65,7 +69,7 @@ jobs:
           severity: 'HIGH,CRITICAL'
 
       - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         with:
           sarif_file: 'trivy-results.sarif'
