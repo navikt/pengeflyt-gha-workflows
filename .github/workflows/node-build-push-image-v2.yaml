@@ -36,12 +36,12 @@ on:
       cdn-source:
         required: false
         type: string
-        description: 'source' parameter for use with nais/deploy/actions/cdn-upload/v2, e.g. './dist/client/_astro'
+        description: If uploading assets to CDN is wanted, set this to the 'source' parameter that should be sent to nais/deploy/actions/cdn-upload/v2; e.g. './dist/client/_astro'
         default: ''
       cdn-destination:
         required: false
         type: string
-        description: 'destination' parameter for use with nais/deploy/actions/cdn-upload/v2; typically set to the name of the application
+        description: If uploading assets to CDN is wanted, set this to the 'destination' parameter that should be sent to nais/deploy/actions/cdn-upload/v2; typically set to the name of the application
         default: ''
     secrets:
       ASTRO_KEY:
@@ -87,7 +87,7 @@ jobs:
 
       - name: Upload assets to CDN
         if: ${{ inputs.cdn-source != '' && inputs.cdn-destination != '' }}
-        uses: nais/deploy/actions/cdn-upload/v2@master
+        uses: nais/deploy/actions/cdn-upload/v2@fa754451577294aae42872a69b888b3470478ec1 # v2
         with:
           team: ${{ inputs.team }}
           source: ${{ inputs.cdn-source }}
