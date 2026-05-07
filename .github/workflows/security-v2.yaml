@@ -1,0 +1,75 @@
+name: Security
+
+on:
+  workflow_call:
+    inputs:
+      team:
+        required: false
+        type: string
+        description: Which Nais team's access token to use
+        default: 'okonomi'
+      language:
+        required: true
+        type: string
+        description: 'Programming language to analyze (eg: java or javascript)'
+      image-suffix:
+        required: false
+        type: string
+        default: ''
+        description: 'Optional suffix to append to the image name (no leading dash).'
+
+env:
+  LATEST_IMAGE: ${{ format('{0}{1}:latest', github.event.repository.name, inputs.image-suffix != '' && format('-{0}', inputs.image-suffix) || '') }}
+  TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
+  TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db"
+  # Støtte for Gradle-prosjekter som har "val githubPassword: String by project" for å kunne hente private
+  # dependencies fra GAR; fordrer at prosjekt-workflowen som kaller denne delte workflowen sender videre GITHUB_TOKEN
+  # (f.eks. med "secrets: inherit")
+  ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.READER_TOKEN }}
+
+jobs:
+  security-analyze:
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - language: ${{ inputs.language }}
+
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # ratchet:actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: github/codeql-action/init@38697555549f1db7851b81482ff19f1fa5c4fedc # ratchet:github/codeql-action/init@v4
+        with:
+          languages: ${{ matrix.language }}
+      - uses: github/codeql-action/autobuild@38697555549f1db7851b81482ff19f1fa5c4fedc # ratchet:github/codeql-action/autobuild@v4
+
+      - name: Perform CodeQL Analysis
+        uses: github/codeql-action/analyze@38697555549f1db7851b81482ff19f1fa5c4fedc # ratchet:github/codeql-action/analyze@v4
+        with:
+          category: "/language:${{ matrix.language }}"
+
+      - name: Login to Google Artifact Registry
+        uses: nais/login@c88ada9ce583928e1c84d2fd5c45cfacdd18d5de # ratchet:nais/login@v0
+        id: login
+        with:
+          team: ${{ inputs.team }}
+          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
+          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
+
+      - name: Run Trivy vulnerability scanner on docker image
+        uses: aquasecurity/trivy-action@57a97c7e7821a5776cebc9bb87c984fa69cba8f1 # ratchet:aquasecurity/trivy-action@master
+        with:
+          image-ref: ${{ steps.login.outputs.registry }}/${{ env.LATEST_IMAGE }}
+          ignore-unfixed: true
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'HIGH,CRITICAL'
+
+      - name: Upload Trivy scan results to GitHub Security tab
+        uses: github/codeql-action/upload-sarif@38697555549f1db7851b81482ff19f1fa5c4fedc # ratchet:github/codeql-action/upload-sarif@v4
+        if: always()
+        with:
+          sarif_file: 'trivy-results.sarif'
