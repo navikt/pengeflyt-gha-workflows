@@ -1,4 +1,4 @@
-name: Build & test PR
+name: Per test Build & test PR
 
 on:
   workflow_call:
