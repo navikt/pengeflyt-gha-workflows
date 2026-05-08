@@ -23,6 +23,11 @@ on:
         type: string
         description: Docker image tag
         default: 'latest'
+      dockerfile:
+        required: false
+        type: string
+        description: Path to the Dockerfile.
+        default: 'Dockerfile'
     outputs:
       image:
         description: Google Artifact Registery image
@@ -61,5 +66,6 @@ jobs:
         with:
           team: ${{ inputs.team }}
           tag: ${{ inputs.image-tag }}
+          dockerfile: ${{ inputs.dockerfile }}
     outputs:
       image: ${{ steps.docker-build-push.outputs.image }}
