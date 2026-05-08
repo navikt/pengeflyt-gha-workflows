@@ -1,0 +1,42 @@
+name: Per test Build & test PR
+
+on:
+  workflow_call:
+    inputs:
+      java-version:
+        required: false
+        type: string
+        description: Java version to build with
+        default: '21'
+      gradle-task:
+        required: false
+        type: string
+        description: Gradle task to run
+        default: './gradlew --configuration-cache build shadowJar'
+
+jobs:
+  build-pr:
+    runs-on: ubuntu-latest
+    env:
+      ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.READER_TOKEN }}
+    steps:
+      - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # ratchet:actions/checkout@v5
+        with:
+          persist-credentials: false
+
+      - uses: actions/setup-java@be666c2fcd27ec809703dec50e508c2fdc7f6654 # ratchet:actions/setup-java@v5
+        with:
+          distribution: 'temurin'
+          java-version: ${{ inputs.java-version }}
+
+      - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # ratchet:gradle/actions/setup-gradle@v4
+      - name: Run Gradle task safely
+        env:
+          GRADLE_TASK: ${{ inputs.gradle-task }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$GRADLE_TASK" =~ ^\./gradlew[[:space:]][a-zA-Z0-9:_./=-]+([[:space:]][a-zA-Z0-9:_./=-]+)*$ ]]; then
+            echo "Invalid gradle-task input"
+            exit 1
+          fi
+          eval "$GRADLE_TASK"
