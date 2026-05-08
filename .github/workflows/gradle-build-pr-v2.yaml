@@ -30,4 +30,13 @@ jobs:
           java-version: ${{ inputs.java-version }}
 
       - uses: gradle/actions/setup-gradle@ed408507eac070d1f99cc633dbcf757c94c7933a # ratchet:gradle/actions/setup-gradle@v4
-      - run: ${{ inputs.gradle-task }}
+      - name: Run Gradle task safely
+        env:
+          GRADLE_TASK: ${{ inputs.gradle-task }}
+        run: |
+          set -euo pipefail
+          if [[ ! "$GRADLE_TASK" =~ ^\./gradlew[[:space:]][a-zA-Z0-9:_./=-]+([[:space:]][a-zA-Z0-9:_./=-]+)*$ ]]; then
+            echo "Invalid gradle-task input"
+            exit 1
+          fi
+          eval "$GRADLE_TASK"
