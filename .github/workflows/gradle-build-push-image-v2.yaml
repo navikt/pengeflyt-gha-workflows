@@ -49,7 +49,11 @@ jobs:
           DEPENDENCY_GRAPH_INCLUDE_CONFIGURATIONS: compileClasspath|runtimeClasspath
         with:
           dependency-graph: generate-and-submit
-      - run: ${{ inputs.gradle-task }}
+      - name: Run Gradle task
+        env:
+          GRADLE_TASK: ${{ inputs.gradle-task }}
+        run: |
+          bash -lc "$GRADLE_TASK"
 
       - name: Push Docker Image to GAR
         uses: nais/docker-build-push@078e460885ed0424b60d45ce9220b4be1748be9d # ratchet:nais/docker-build-push@v0
