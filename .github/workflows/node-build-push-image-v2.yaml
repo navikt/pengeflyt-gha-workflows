@@ -81,9 +81,10 @@ jobs:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
       - name: Build app
-        run: ${{ inputs.build-command }}
+        run: ${INPUTS_BUILD_COMMAND}
         env:
           ASTRO_KEY: ${{ secrets.ASTRO_KEY }}
+          INPUTS_BUILD_COMMAND: ${{ inputs.build-command }}
 
       - name: Upload assets to CDN
         if: ${{ inputs.cdn-source != '' && inputs.cdn-destination != '' }}
