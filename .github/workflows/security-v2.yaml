@@ -17,6 +17,11 @@ on:
         type: string
         default: ''
         description: 'Optional suffix to append to the image name (no leading dash).'
+      use-reader-token:
+        required: false
+        type: boolean
+        default: false
+        description: 'Tillater Gradle å hente private dependencies fra Github Packages'
 
 env:
   LATEST_IMAGE: ${{ format('{0}{1}:latest', github.event.repository.name, inputs.image-suffix != '' && format('-{0}', inputs.image-suffix) || '') }}
@@ -25,7 +30,7 @@ env:
   # Støtte for Gradle-prosjekter som har "val githubPassword: String by project" for å kunne hente private
   # dependencies fra GAR; fordrer at prosjekt-workflowen som kaller denne delte workflowen sender videre GITHUB_TOKEN
   # (f.eks. med "secrets: inherit")
-  ORG_GRADLE_PROJECT_githubPassword: ${{ secrets.READER_TOKEN }}
+  ORG_GRADLE_PROJECT_githubPassword: ${{ inputs.use-reader-token && secrets.READER_TOKEN || secrets.GITHUB_TOKEN }}
 
 jobs:
   security-analyze:
