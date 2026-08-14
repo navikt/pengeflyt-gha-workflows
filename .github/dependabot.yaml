@@ -9,7 +9,3 @@ updates:
       timezone: "Europe/Oslo"
     cooldown:
       default-days: 7
-    groups:
-      github:
-        patterns:
-          - "*"
