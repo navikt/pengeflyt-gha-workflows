@@ -88,7 +88,7 @@ jobs:
 
       - name: Upload assets to CDN
         if: ${{ inputs.cdn-source != '' && inputs.cdn-destination != '' }}
-        uses: nais/deploy/actions/cdn-upload/v2@fa754451577294aae42872a69b888b3470478ec1 # v2
+        uses: nais/deploy/actions/cdn-upload/v2@849e900e3cfa7faf7ad1532bb3a3e6499c932199 # v2
         with:
           team: ${{ inputs.team }}
           source: ${{ inputs.cdn-source }}
