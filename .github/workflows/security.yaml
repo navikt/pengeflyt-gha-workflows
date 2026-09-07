@@ -6,7 +6,7 @@ on:
       team:
         required: false
         type: string
-        description: Which Nais team's access token to use
+        description: 'Ikke i bruk'
         default: 'okonomi'
       language:
         required: true
@@ -16,12 +16,9 @@ on:
         required: false
         type: string
         default: ''
-        description: 'Optional suffix to append to the image name (no leading dash).'
+        description: 'Ikke i bruk'
 
 env:
-  LATEST_IMAGE: ${{ format('{0}{1}:latest', github.event.repository.name, inputs.image-suffix != '' && format('-{0}', inputs.image-suffix) || '') }}
-  TRIVY_JAVA_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-java-db:1"
-  TRIVY_DB_REPOSITORY: "public.ecr.aws/aquasecurity/trivy-db"
   # Støtte for Gradle-prosjekter som har "val githubPassword: String by project" for å kunne hente private
   # dependencies fra GAR; fordrer at prosjekt-workflowen som kaller denne delte workflowen sender videre GITHUB_TOKEN
   # (f.eks. med "secrets: inherit")
@@ -50,26 +47,3 @@ jobs:
         uses: github/codeql-action/analyze@38697555549f1db7851b81482ff19f1fa5c4fedc # v4.34.1
         with:
           category: "/language:${{ matrix.language }}"
-
-      - name: Login to Google Artifact Registry
-        uses: nais/login@bb6c3e1e14e53d40d69d0d092bd2fce2e39ae3bf # v0
-        id: login
-        with:
-          team: ${{ inputs.team }}
-          identity_provider: ${{ secrets.NAIS_WORKLOAD_IDENTITY_PROVIDER }}
-          project_id: ${{ vars.NAIS_MANAGEMENT_PROJECT_ID }}
-
-      - name: Run Trivy vulnerability scanner on docker image
-        uses: aquasecurity/trivy-action@ed142fd0673e97e23eac54620cfb913e5ce36c25 # v0.36.0
-        with:
-          image-ref: ${{ steps.login.outputs.registry }}/${{ env.LATEST_IMAGE }}
-          ignore-unfixed: true
-          format: 'sarif'
-          output: 'trivy-results.sarif'
-          severity: 'HIGH,CRITICAL'
-
-      - name: Upload Trivy scan results to GitHub Security tab
-        uses: github/codeql-action/upload-sarif@5595ccaf912efad79be6eef63a5619ff05969be3 # v4.37.6
-        if: always()
-        with:
-          sarif_file: 'trivy-results.sarif'
