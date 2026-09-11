@@ -80,6 +80,9 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.READER_TOKEN }}
 
+      - name: Run tests
+        run: pnpm run test
+
       - name: Build app
         run: ${INPUTS_BUILD_COMMAND}
         env:
