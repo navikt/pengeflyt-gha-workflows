@@ -5,9 +5,9 @@ on:
     inputs:
       node-version:
         required: false
-        type: string
-        description: Node version to build with
-        default: '22'
+        type: number
+        description: Node version to build with (min 24)
+        default: '24'
       pnpm-version:
         required: false
         type: string
@@ -18,6 +18,11 @@ jobs:
   build-pr:
     runs-on: ubuntu-latest
     steps:
+      - name: Sjekk at node-version er minst 24
+        if: ${{ inputs.node-version < 24 }}
+        run: |
+          echo "Denne workflowen krever minimum node-versjon 24!"
+          exit 1
       - uses: actions/checkout@93cb6efe18208431cddfb8368fd83d5badbf9bfd # v5.0.1
         with:
           persist-credentials: false
