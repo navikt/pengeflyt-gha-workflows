@@ -6,8 +6,8 @@ on:
       node-version:
         required: false
         type: string
-        description: Node version to run tests with
-        default: '22'
+        description: Node version to run tests with (min 24)
+        default: '24'
       pnpm-version:
         required: false
         type: string

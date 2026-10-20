@@ -16,8 +16,8 @@ on:
       node-version:
         required: false
         type: string
-        description: Node version to build with
-        default: '22'
+        description: Node version to build with (min 24)
+        default: '24'
       image-tag:
         required: false
         type: string
