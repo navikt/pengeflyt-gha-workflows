@@ -74,6 +74,12 @@ jobs:
       - name: Build app
         run: pnpm run build
 
+      - name: Prune dev dependencies from server
+        run: |
+          cd server && \
+            rm -rf node_modules && \
+            pnpm install --prod --frozen-lockfile --ignore-scripts --no-optional
+
       - name: Push Docker Image to GAR
         uses: nais/docker-build-push@dd7421d5068057a020ca46ead966c26190c516b1 # v0
         id: docker-build-push
