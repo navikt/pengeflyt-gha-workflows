@@ -48,6 +48,7 @@ jobs:
         env: # Eksluder test dependencies
           DEPENDENCY_GRAPH_INCLUDE_CONFIGURATIONS: compileClasspath|runtimeClasspath
         with:
+          cache-provider: basic
           dependency-graph: generate-and-submit
       - run: ${INPUTS_GRADLE_TASK}
         env:
